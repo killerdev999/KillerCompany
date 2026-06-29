@@ -12,77 +12,185 @@ ______________________________________________________________
 
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+local StarterGui = game:GetService("StarterGui")
 
+local fileName = "KillerHub_SavedKey.txt"
+
+local function saveKey(key)
+    if writefile then
+        pcall(function() writefile(fileName, key) end)
+    end
+end
+
+local function getSavedKey()
+    if isfile and isfile(fileName) then
+        local success, result = pcall(function() return readfile(fileName) end)
+        if success then return result end
+    end
+    return ""
+end
+
+local function sendErrorNotification(message)
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = "KILLER HUB",
+            Text = message,
+            Duration = 5
+        })
+    end)
+end
+
+local function showSuccessNotification()
+    local SuccessGui = Instance.new("ScreenGui")
+    SuccessGui.Name = "KillerHubSuccess"
+    SuccessGui.Parent = (cloneref and cloneref(CoreGui)) or CoreGui
+    
+    local SuccessText = Instance.new("TextLabel")
+    SuccessText.Parent = SuccessGui
+    SuccessText.AnchorPoint = Vector2.new(0.5, 0.5)
+    SuccessText.Position = UDim2.new(0.5, 0, 0.5, 0)
+    SuccessText.Size = UDim2.new(0, 300, 0, 50)
+    SuccessText.BackgroundTransparency = 1
+    SuccessText.Font = Enum.Font.GothamBlack
+    SuccessText.Text = "SUCESSO! CARREGANDO KILLER HUB..."
+    SuccessText.TextColor3 = Color3.fromRGB(255, 50, 50)
+    SuccessText.TextSize = 24
+    SuccessText.TextStrokeTransparency = 0
+    SuccessText.TextTransparency = 1
+    SuccessText.TextStrokeTransparency = 1
+    
+    local fadeIn = TweenService:Create(SuccessText, TweenInfo.new(0.5), {TextTransparency = 0, TextStrokeTransparency = 0})
+    local fadeOut = TweenService:Create(SuccessText, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 2), {TextTransparency = 1, TextStrokeTransparency = 1})
+    
+    fadeIn:Play()
+    fadeIn.Completed:Wait()
+    fadeOut:Play()
+    fadeOut.Completed:Wait()
+    SuccessGui:Destroy()
+end
 
 local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local KeyInput = Instance.new("TextBox")
-local SubmitBtn = Instance.new("TextButton")
-
-
-local UICorner1 = Instance.new("UICorner")
-local UICorner2 = Instance.new("UICorner")
-local UICorner3 = Instance.new("UICorner")
-
-
-ScreenGui.Name = "KeySystemUI"
-
+ScreenGui.Name = "KillerHubKeySystem"
 ScreenGui.Parent = (cloneref and cloneref(CoreGui)) or CoreGui 
 
+local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 5, 5)
 MainFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
 MainFrame.Size = UDim2.new(0, 300, 0, 150)
 MainFrame.Active = true
-MainFrame.Draggable = true 
-UICorner1.Parent = MainFrame
+MainFrame.Draggable = true
+Instance.new("UICorner", MainFrame)
 
+local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
 Title.BackgroundTransparency = 1
 Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Font = Enum.Font.GothamBold
+Title.Font = Enum.Font.GothamBlack
 Title.Text = "KILLER HUB KEYLESS"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 18
+Title.TextColor3 = Color3.fromRGB(255, 50, 50)
+Title.TextSize = 20
 
+local KeyInput = Instance.new("TextBox")
 KeyInput.Parent = MainFrame
-KeyInput.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+KeyInput.BackgroundColor3 = Color3.fromRGB(40, 10, 10)
 KeyInput.Position = UDim2.new(0.1, 0, 0.4, 0)
 KeyInput.Size = UDim2.new(0.8, 0, 0, 35)
 KeyInput.Font = Enum.Font.Gotham
-KeyInput.PlaceholderText = "Insira sua Key (Ex: KF-XXXX...)"
-KeyInput.Text = ""
+KeyInput.PlaceholderText = "Insira sua Key... (Exmp: KF-XXXX)"
+KeyInput.PlaceholderColor3 = Color3.fromRGB(150, 50, 50)
+KeyInput.Text = getSavedKey()
 KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
 KeyInput.TextSize = 14
-UICorner2.Parent = KeyInput
+Instance.new("UICorner", KeyInput)
 
+local SubmitBtn = Instance.new("TextButton")
 SubmitBtn.Parent = MainFrame
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+SubmitBtn.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
 SubmitBtn.Position = UDim2.new(0.25, 0, 0.7, 0)
 SubmitBtn.Size = UDim2.new(0.5, 0, 0, 35)
 SubmitBtn.Font = Enum.Font.GothamBold
-SubmitBtn.Text = "Validar Key"
+SubmitBtn.Text = "Verificar Key"
 SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 SubmitBtn.TextSize = 14
-UICorner3.Parent = SubmitBtn
-
+Instance.new("UICorner", SubmitBtn)
 
 SubmitBtn.MouseButton1Click:Connect(function()
     local key = KeyInput.Text
     
+    if key == "" or key == " " then
+        sendErrorNotification("Por favor, insira uma Key!")
+        return
+    end
+
+    SubmitBtn.Text = "Verificando..."
     
-    if key ~= "" and key ~= " " then
+    local url = "https://www.keyforge.win/v1/load/cmqygdgws000204jyvwpi6a42?e=1&script=cmqygl8wo000204l5c7vdhojf&key=" .. HttpService:UrlEncode(key) .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647))
+    
+    local success, response = pcall(function()
+        return game:HttpGet(url, true)
+    end)
+
+    if not success or not response then
+        sendErrorNotification("Erro de conexão com o servidor da KeyForge.")
+        SubmitBtn.Text = "Verificar Key"
+        return
+    end
+
+    local lowerResponse = string.lower(response)
+    
+    if string.find(lowerResponse, "invalid") or string.find(lowerResponse, "incorrect") or string.find(lowerResponse, "not found") then
+        sendErrorNotification("Key Inválida! Verifique se digitou corretamente.")
+        SubmitBtn.Text = "Verificar Key"
+        return
         
-        ScreenGui:Destroy()
+    elseif string.find(lowerResponse, "expire") then
+        sendErrorNotification("Key Expirada! Você precisa pegar uma nova Key.")
+        SubmitBtn.Text = "Verificar Key"
+        return
         
+    elseif string.find(lowerResponse, "hwid") then
+        sendErrorNotification("HWID Incorreto! Esta Key foi gerada para outro aparelho.")
+        SubmitBtn.Text = "Verificar Key"
+        return
         
-        local success, err = pcall(function()
-            (loadstring or load)(game:HttpGet("https://www.keyforge.win/v1/load/cmqygdgws000204jyvwpi6a42?e=1&script=cmqygl8wo000204l5c7vdhojf&key=" .. HttpService:UrlEncode(key) .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647)), true))()
+    elseif string.find(lowerResponse, "blacklist") or string.find(lowerResponse, "banned") then
+        sendErrorNotification("Key Banida! Esta chave está na lista negra.")
+        SubmitBtn.Text = "Verificar Key"
+        return
+        
+    elseif string.find(lowerResponse, "rate limit") or string.find(lowerResponse, "too many") then
+        sendErrorNotification("Muitas tentativas! Aguarde um pouco e tente de novo.")
+        SubmitBtn.Text = "Verificar Key"
+        return
+        
+    elseif #response < 10 then
+        sendErrorNotification("Erro desconhecido. O servidor retornou algo inválido.")
+        SubmitBtn.Text = "Verificar Key"
+        return
+    end
+
+    local compiledScript, compileError = loadstring(response)
+    
+    if compiledScript then
+
+        saveKey(key)
+        ScreenGui:Destroy() 
+        
+        task.spawn(showSuccessNotification)
+        
+        local runSuccess, runError = pcall(function()
+            compiledScript()
         end)
         
-        if not success then
-            warn("[Sistema]: Erro ao tentar carregar o script principal. Verifique a Key ou sua conexão.\nDetalhe do erro: " .. tostring(err))
+        if not runSuccess then
+            warn("Erro ao rodar o Killer Hub: " .. tostring(runError))
         end
+    else
+
+sendErrorNotification("A Key inserida não retornou um script válido.")
+        SubmitBtn.Text = "Verificar Key"
     end
 end)
+
