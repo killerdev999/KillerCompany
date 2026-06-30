@@ -8,7 +8,7 @@ ______________________________________________________________
 |_|\_\_____|______|______|______|_|  \_\ |_|  |_|\____/|____/
 ______________________________________________________________
 
-| Version: Beta  |  Last Update: 27-06-2026  | By: KILLER ]]
+| Version: Beta  |  Last Update: 30-06-2026  | By: KILLER ]]
 
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
@@ -76,45 +76,125 @@ ScreenGui.Parent = (cloneref and cloneref(CoreGui)) or CoreGui
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 5, 5)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
-MainFrame.Size = UDim2.new(0, 300, 0, 150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Fundo super escuro, quase preto (Profissional)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.Size = UDim2.new(0, 320, 0, 165)
 MainFrame.Active = true
 MainFrame.Draggable = true
-Instance.new("UICorner", MainFrame)
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Parent = MainFrame
+MainStroke.Color = Color3.fromRGB(180, 25, 25)
+MainStroke.Thickness = 1.2
+MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local Separator = Instance.new("Frame")
+Separator.Parent = MainFrame
+Separator.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Separator.BorderSizePixel = 0
+Separator.Position = UDim2.new(0, 20, 0, 48)
+Separator.Size = UDim2.new(1, -40, 0, 1)
+
+local LogoK = Instance.new("TextLabel")
+LogoK.Parent = MainFrame
+LogoK.BackgroundTransparency = 1
+LogoK.Position = UDim2.new(0, 20, 0, 12)
+LogoK.Size = UDim2.new(0, 25, 0, 25)
+LogoK.Font = Enum.Font.GothamBlack
+LogoK.Text = "K"
+LogoK.TextColor3 = Color3.fromRGB(220, 30, 30)
+LogoK.TextSize = 26
 
 local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
 Title.BackgroundTransparency = 1
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Font = Enum.Font.GothamBlack
+Title.Position = UDim2.new(0, 50, 0, 12)
+Title.Size = UDim2.new(1, -70, 0, 25)
+Title.Font = Enum.Font.GothamBold
 Title.Text = "KILLER HUB KEYLESS"
-Title.TextColor3 = Color3.fromRGB(255, 50, 50)
-Title.TextSize = 20
+Title.TextColor3 = Color3.fromRGB(230, 230, 230)
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
 local KeyInput = Instance.new("TextBox")
 KeyInput.Parent = MainFrame
-KeyInput.BackgroundColor3 = Color3.fromRGB(40, 10, 10)
-KeyInput.Position = UDim2.new(0.1, 0, 0.4, 0)
-KeyInput.Size = UDim2.new(0.8, 0, 0, 35)
+KeyInput.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+KeyInput.Position = UDim2.new(0.5, -140, 0, 65)
+KeyInput.Size = UDim2.new(0, 280, 0, 35)
 KeyInput.Font = Enum.Font.Gotham
-KeyInput.PlaceholderText = "Insira sua Key... (Exmp: KF-XXXX)"
-KeyInput.PlaceholderColor3 = Color3.fromRGB(150, 50, 50)
+KeyInput.PlaceholderText = "Cole sua Key aqui! (Exmp: KF-XXXX)"
+KeyInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
 KeyInput.Text = getSavedKey()
 KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.TextSize = 14
-Instance.new("UICorner", KeyInput)
+KeyInput.TextSize = 13
+Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 5)
+
+local InputStroke = Instance.new("UIStroke")
+InputStroke.Parent = KeyInput
+InputStroke.Color = Color3.fromRGB(45, 45, 45)
+InputStroke.Thickness = 1
+InputStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local GetKeyBtn = Instance.new("TextButton")
+GetKeyBtn.Parent = MainFrame
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+GetKeyBtn.Position = UDim2.new(0, 20, 0, 110)
+GetKeyBtn.Size = UDim2.new(0, 135, 0, 35)
+GetKeyBtn.Font = Enum.Font.GothamSemibold
+GetKeyBtn.Text = "Get Key"
+GetKeyBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+GetKeyBtn.TextSize = 13
+GetKeyBtn.AutoButtonColor = false
+Instance.new("UICorner", GetKeyBtn).CornerRadius = UDim.new(0, 5)
+
+local GetKeyStroke = Instance.new("UIStroke")
+GetKeyStroke.Parent = GetKeyBtn
+GetKeyStroke.Color = Color3.fromRGB(60, 60, 60)
+GetKeyStroke.Thickness = 1
+GetKeyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
 local SubmitBtn = Instance.new("TextButton")
 SubmitBtn.Parent = MainFrame
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-SubmitBtn.Position = UDim2.new(0.25, 0, 0.7, 0)
-SubmitBtn.Size = UDim2.new(0.5, 0, 0, 35)
+SubmitBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
+SubmitBtn.Position = UDim2.new(0, 165, 0, 110)
+SubmitBtn.Size = UDim2.new(0, 135, 0, 35)
 SubmitBtn.Font = Enum.Font.GothamBold
 SubmitBtn.Text = "Verificar Key"
 SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitBtn.TextSize = 14
-Instance.new("UICorner", SubmitBtn)
+SubmitBtn.TextSize = 13
+SubmitBtn.AutoButtonColor = false 
+Instance.new("UICorner", SubmitBtn).CornerRadius = UDim.new(0, 5)
+
+GetKeyBtn.MouseEnter:Connect(function()
+    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+end)
+GetKeyBtn.MouseLeave:Connect(function()
+    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25), TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
+end)
+
+SubmitBtn.MouseEnter:Connect(function()
+    TweenService:Create(SubmitBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(230, 40, 40)}):Play()
+end)
+SubmitBtn.MouseLeave:Connect(function()
+    TweenService:Create(SubmitBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(200, 30, 30)}):Play()
+end)
+
+GetKeyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        pcall(function()
+            setclipboard("https://discord.gg/VfbvCRJBNv")
+        end)
+        GetKeyBtn.Text = "Copiado!"
+        TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 100, 40)}):Play()
+        task.wait(1.5)
+        GetKeyBtn.Text = "Get Key"
+        TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play()
+    else
+        sendErrorNotification("Seu executor não suporta cópia de links.")
+    end
+end)
 
 SubmitBtn.MouseButton1Click:Connect(function()
     local key = KeyInput.Text
@@ -133,12 +213,14 @@ SubmitBtn.MouseButton1Click:Connect(function()
     end)
 
     if not success or not response then
-        sendErrorNotification("Erro de conexão com o servidor da KeyForge.")
+        sendErrorNotification("Erro de conexão com o servidor do KeyForge, Tente novamente.")
         SubmitBtn.Text = "Verificar Key"
         return
     end
 
+    
     local lowerResponse = string.lower(response)
+    
     
     if string.find(lowerResponse, "invalid") or string.find(lowerResponse, "incorrect") or string.find(lowerResponse, "not found") then
         sendErrorNotification("Key Inválida! Verifique se digitou corretamente.")
@@ -171,10 +253,11 @@ SubmitBtn.MouseButton1Click:Connect(function()
         return
     end
 
+    
     local compiledScript, compileError = loadstring(response)
     
     if compiledScript then
-
+        
         saveKey(key)
         ScreenGui:Destroy() 
         
@@ -188,9 +271,8 @@ SubmitBtn.MouseButton1Click:Connect(function()
             warn("Erro ao rodar o Killer Hub: " .. tostring(runError))
         end
     else
-
-sendErrorNotification("A Key inserida não retornou um script válido.")
+        
+        sendErrorNotification("A Key inserida não retornou um script válido.")
         SubmitBtn.Text = "Verificar Key"
     end
 end)
-
