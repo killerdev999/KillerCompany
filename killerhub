@@ -14,6 +14,7 @@ local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 local StarterGui = game:GetService("StarterGui")
+local Lighting = game:GetService("Lighting")
 
 local fileName = "KillerHub_SavedKey.txt"
 
@@ -32,41 +33,141 @@ local function getSavedKey()
 end
 
 local function sendErrorNotification(message)
-    pcall(function()
-        StarterGui:SetCore("SendNotification", {
-            Title = "KILLER HUB",
-            Text = message,
-            Duration = 5
-        })
+    local ErrorGui = Instance.new("ScreenGui")
+    ErrorGui.Name = "KillerHubError"
+    ErrorGui.Parent = (cloneref and cloneref(CoreGui)) or CoreGui
+
+    local NotifyFrame = Instance.new("Frame")
+    NotifyFrame.Parent = ErrorGui
+    NotifyFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
+    NotifyFrame.AnchorPoint = Vector2.new(0.5, 0)
+    NotifyFrame.Position = UDim2.new(0.5, 0, 0, 20)
+    NotifyFrame.Size = UDim2.new(0, 320, 0, 60)
+    Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 8)
+
+    local NotifyStroke = Instance.new("UIStroke")
+    NotifyStroke.Parent = NotifyFrame
+    NotifyStroke.Color = Color3.fromRGB(255, 165, 0)
+    NotifyStroke.Thickness = 1.5
+    NotifyStroke.Transparency = 0.2
+    NotifyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+    local WarningIcon = Instance.new("TextLabel")
+    WarningIcon.Parent = NotifyFrame
+    WarningIcon.BackgroundTransparency = 1
+    WarningIcon.Position = UDim2.new(0, 15, 0, 0)
+    WarningIcon.Size = UDim2.new(0, 40, 1, 0)
+    WarningIcon.Font = Enum.Font.GothamBlack
+    WarningIcon.Text = "!"
+    WarningIcon.TextColor3 = Color3.fromRGB(255, 165, 0)
+    WarningIcon.TextSize = 25
+
+    local MsgText = Instance.new("TextLabel")
+    MsgText.Parent = NotifyFrame
+    MsgText.BackgroundTransparency = 1
+    MsgText.Position = UDim2.new(0, 60, 0, 0)
+    MsgText.Size = UDim2.new(1, -75, 1, 0)
+    MsgText.Font = Enum.Font.GothamSemibold
+    MsgText.Text = message
+    MsgText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MsgText.TextSize = 13
+    MsgText.TextWrapped = true
+    MsgText.TextXAlignment = Enum.TextXAlignment.Left
+
+    NotifyFrame.Position = UDim2.new(0.5, 0, 0, -80)
+    TweenService:Create(NotifyFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, 0, 0, 20)}):Play()
+    
+    task.delay(4, function()
+        TweenService:Create(NotifyFrame, TweenInfo.new(0.3, Enum.EasingStyle.Cubic, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 0, -80)}):Play()
+        task.wait(0.3)
+        ErrorGui:Destroy()
     end)
 end
 
 local function showSuccessNotification()
+    if CoreGui:FindFirstChild("KillerHubBlur") then
+        local blur = CoreGui:FindFirstChild("KillerHubBlur")
+        TweenService:Create(blur, TweenInfo.new(0.5), {Size = 0}):Play()
+        task.delay(0.5, function() blur:Destroy() end)
+    end
+
     local SuccessGui = Instance.new("ScreenGui")
     SuccessGui.Name = "KillerHubSuccess"
     SuccessGui.Parent = (cloneref and cloneref(CoreGui)) or CoreGui
     
-    local SuccessText = Instance.new("TextLabel")
-    SuccessText.Parent = SuccessGui
-    SuccessText.AnchorPoint = Vector2.new(0.5, 0.5)
-    SuccessText.Position = UDim2.new(0.5, 0, 0.5, 0)
-    SuccessText.Size = UDim2.new(0, 300, 0, 50)
-    SuccessText.BackgroundTransparency = 1
-    SuccessText.Font = Enum.Font.GothamBlack
-    SuccessText.Text = "SUCESSO! CARREGANDO KILLER HUB..."
-    SuccessText.TextColor3 = Color3.fromRGB(255, 50, 50)
-    SuccessText.TextSize = 24
-    SuccessText.TextStrokeTransparency = 0
-    SuccessText.TextTransparency = 1
-    SuccessText.TextStrokeTransparency = 1
+    local NotifyFrame = Instance.new("Frame")
+    NotifyFrame.Parent = SuccessGui
+    NotifyFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
+    NotifyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    NotifyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    NotifyFrame.Size = UDim2.new(0, 0, 0, 0)
+    NotifyFrame.ClipsDescendants = true
+    Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 8)
+
+    local NotifyStroke = Instance.new("UIStroke")
+    NotifyStroke.Parent = NotifyFrame
+    NotifyStroke.Color = Color3.fromRGB(255, 40, 40)
+    NotifyStroke.Thickness = 1.5
+    NotifyStroke.Transparency = 0.2
+    NotifyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+    local LogoK = Instance.new("TextLabel")
+    LogoK.Parent = NotifyFrame
+    LogoK.BackgroundTransparency = 1
+    LogoK.Position = UDim2.new(0, 20, 0.5, -20)
+    LogoK.Size = UDim2.new(0, 40, 0, 40)
+    LogoK.Font = Enum.Font.GothamBlack
+    LogoK.Text = "K"
+    LogoK.TextColor3 = Color3.fromRGB(255, 40, 40)
+    LogoK.TextSize = 35
+
+    local LogoStroke = Instance.new("UIStroke")
+    LogoStroke.Parent = LogoK
+    LogoStroke.Color = Color3.fromRGB(255, 0, 0)
+    LogoStroke.Thickness = 1
+    LogoStroke.Transparency = 0.5
+
+    local Title = Instance.new("TextLabel")
+    Title.Parent = NotifyFrame
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0, 75, 0.5, -14)
+    Title.Size = UDim2.new(1, -90, 0, 20)
+    Title.Font = Enum.Font.GothamBlack
+    Title.Text = "ACESSO LIBERADO"
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextSize = 18
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local SubTitle = Instance.new("TextLabel")
+    SubTitle.Parent = NotifyFrame
+    SubTitle.BackgroundTransparency = 1
+    SubTitle.Position = UDim2.new(0, 75, 0.5, 6)
+    SubTitle.Size = UDim2.new(1, -90, 0, 15)
+    SubTitle.Font = Enum.Font.GothamSemibold
+    SubTitle.Text = "Carregando Killer Hub..."
+    SubTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
+    SubTitle.TextSize = 12
+    SubTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+    local LoadLine = Instance.new("Frame")
+    LoadLine.Parent = NotifyFrame
+    LoadLine.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
+    LoadLine.BorderSizePixel = 0
+    LoadLine.Position = UDim2.new(0, 0, 1, -3)
+    LoadLine.Size = UDim2.new(0, 0, 0, 3)
+
+    local tweenIn = TweenService:Create(NotifyFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 75)})
+    tweenIn:Play()
     
-    local fadeIn = TweenService:Create(SuccessText, TweenInfo.new(0.5), {TextTransparency = 0, TextStrokeTransparency = 0})
-    local fadeOut = TweenService:Create(SuccessText, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 2), {TextTransparency = 1, TextStrokeTransparency = 1})
+    local loadTween = TweenService:Create(LoadLine, TweenInfo.new(1.8, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 0, 3)})
+    loadTween:Play()
     
-    fadeIn:Play()
-    fadeIn.Completed:Wait()
-    fadeOut:Play()
-    fadeOut.Completed:Wait()
+    loadTween.Completed:Wait()
+    
+    local tweenOut = TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
+    tweenOut:Play()
+    tweenOut.Completed:Wait()
+    
     SuccessGui:Destroy()
 end
 
@@ -74,104 +175,161 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "KillerHubKeySystem"
 ScreenGui.Parent = (cloneref and cloneref(CoreGui)) or CoreGui 
 
+local BlurEffect = Instance.new("BlurEffect")
+BlurEffect.Name = "KillerHubBlur"
+BlurEffect.Size = 0
+BlurEffect.Parent = Lighting
+TweenService:Create(BlurEffect, TweenInfo.new(0.6, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {Size = 20}):Play()
+BlurEffect.Parent = CoreGui
+
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Fundo super escuro, quase preto (Profissional)
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.Size = UDim2.new(0, 320, 0, 165)
+MainFrame.Size = UDim2.new(0, 0, 0, 0)
 MainFrame.Active = true
 MainFrame.Draggable = true
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
+MainFrame.ClipsDescendants = true
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
+
+TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 360, 0, 190)}):Play()
 
 local MainStroke = Instance.new("UIStroke")
 MainStroke.Parent = MainFrame
-MainStroke.Color = Color3.fromRGB(180, 25, 25)
-MainStroke.Thickness = 1.2
+MainStroke.Color = Color3.fromRGB(255, 40, 40)
+MainStroke.Thickness = 1.5
+MainStroke.Transparency = 0.3
 MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
-local Separator = Instance.new("Frame")
-Separator.Parent = MainFrame
-Separator.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-Separator.BorderSizePixel = 0
-Separator.Position = UDim2.new(0, 20, 0, 48)
-Separator.Size = UDim2.new(1, -40, 0, 1)
+local TopBar = Instance.new("Frame")
+TopBar.Parent = MainFrame
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
+TopBar.BorderSizePixel = 0
+TopBar.Size = UDim2.new(1, 0, 0, 55)
+Instance.new("UICorner", TopBar).CornerRadius = UDim.new(0, 12)
+
+local TopBarFix = Instance.new("Frame")
+TopBarFix.Parent = TopBar
+TopBarFix.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
+TopBarFix.BorderSizePixel = 0
+TopBarFix.Position = UDim2.new(0, 0, 1, -6)
+TopBarFix.Size = UDim2.new(1, 0, 0, 6)
 
 local LogoK = Instance.new("TextLabel")
-LogoK.Parent = MainFrame
+LogoK.Parent = TopBar
 LogoK.BackgroundTransparency = 1
-LogoK.Position = UDim2.new(0, 20, 0, 12)
-LogoK.Size = UDim2.new(0, 25, 0, 25)
+LogoK.Position = UDim2.new(0, 20, 0, 0)
+LogoK.Size = UDim2.new(0, 40, 1, 0)
 LogoK.Font = Enum.Font.GothamBlack
 LogoK.Text = "K"
-LogoK.TextColor3 = Color3.fromRGB(220, 30, 30)
-LogoK.TextSize = 26
+LogoK.TextColor3 = Color3.fromRGB(255, 40, 40)
+LogoK.TextSize = 32
+
+local LogoStroke = Instance.new("UIStroke")
+LogoStroke.Parent = LogoK
+LogoStroke.Color = Color3.fromRGB(255, 0, 0)
+LogoStroke.Thickness = 1
+LogoStroke.Transparency = 0.5
 
 local Title = Instance.new("TextLabel")
-Title.Parent = MainFrame
+Title.Parent = TopBar
 Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0, 50, 0, 12)
-Title.Size = UDim2.new(1, -70, 0, 25)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "KILLER HUB KEYLESS"
-Title.TextColor3 = Color3.fromRGB(230, 230, 230)
-Title.TextSize = 14
+Title.Position = UDim2.new(0, 65, 0, 0)
+Title.Size = UDim2.new(1, -85, 1, 0)
+Title.Font = Enum.Font.GothamBlack
+Title.Text = "KILLER HUB"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
 Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local SubTitle = Instance.new("TextLabel")
+SubTitle.Parent = Title
+SubTitle.BackgroundTransparency = 1
+SubTitle.Position = UDim2.new(0, 108, 0, 2)
+SubTitle.Size = UDim2.new(0, 100, 1, 0)
+SubTitle.Font = Enum.Font.GothamSemibold
+SubTitle.Text = "KEYLESS"
+SubTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
+SubTitle.TextSize = 12
+SubTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local Line = Instance.new("Frame")
+Line.Parent = MainFrame
+Line.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
+Line.BorderSizePixel = 0
+Line.Position = UDim2.new(0, 0, 0, 55)
+Line.Size = UDim2.new(1, 0, 0, 2)
 
 local KeyInput = Instance.new("TextBox")
 KeyInput.Parent = MainFrame
-KeyInput.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-KeyInput.Position = UDim2.new(0.5, -140, 0, 65)
-KeyInput.Size = UDim2.new(0, 280, 0, 35)
+KeyInput.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+KeyInput.Position = UDim2.new(0.5, -155, 0, 75)
+KeyInput.Size = UDim2.new(0, 310, 0, 42)
 KeyInput.Font = Enum.Font.Gotham
-KeyInput.PlaceholderText = "Cole sua Key aqui! (Exmp: KF-XXXX)"
-KeyInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
+KeyInput.PlaceholderText = "Cole sua chave de acesso aqui..."
+KeyInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 110)
 KeyInput.Text = getSavedKey()
 KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.TextSize = 13
-Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 5)
+KeyInput.TextSize = 14
+Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
 
 local InputStroke = Instance.new("UIStroke")
 InputStroke.Parent = KeyInput
-InputStroke.Color = Color3.fromRGB(45, 45, 45)
-InputStroke.Thickness = 1
+InputStroke.Color = Color3.fromRGB(50, 50, 60)
+InputStroke.Thickness = 1.5
 InputStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+KeyInput.Focused:Connect(function()
+    TweenService:Create(InputStroke, TweenInfo.new(0.3), {Color = Color3.fromRGB(255, 40, 40)}):Play()
+end)
+KeyInput.FocusLost:Connect(function()
+    TweenService:Create(InputStroke, TweenInfo.new(0.3), {Color = Color3.fromRGB(50, 50, 60)}):Play()
+end)
 
 local GetKeyBtn = Instance.new("TextButton")
 GetKeyBtn.Parent = MainFrame
-GetKeyBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-GetKeyBtn.Position = UDim2.new(0, 20, 0, 110)
-GetKeyBtn.Size = UDim2.new(0, 135, 0, 35)
-GetKeyBtn.Font = Enum.Font.GothamSemibold
-GetKeyBtn.Text = "Get Key"
-GetKeyBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
+GetKeyBtn.Position = UDim2.new(0, 25, 0, 130)
+GetKeyBtn.Size = UDim2.new(0, 145, 0, 42)
+GetKeyBtn.Font = Enum.Font.GothamBold
+GetKeyBtn.Text = "GET KEY"
+GetKeyBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
 GetKeyBtn.TextSize = 13
 GetKeyBtn.AutoButtonColor = false
-Instance.new("UICorner", GetKeyBtn).CornerRadius = UDim.new(0, 5)
+Instance.new("UICorner", GetKeyBtn).CornerRadius = UDim.new(0, 8)
 
 local GetKeyStroke = Instance.new("UIStroke")
 GetKeyStroke.Parent = GetKeyBtn
-GetKeyStroke.Color = Color3.fromRGB(60, 60, 60)
-GetKeyStroke.Thickness = 1
+GetKeyStroke.Color = Color3.fromRGB(70, 70, 80)
+GetKeyStroke.Thickness = 1.5
 GetKeyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
 local SubmitBtn = Instance.new("TextButton")
 SubmitBtn.Parent = MainFrame
 SubmitBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
-SubmitBtn.Position = UDim2.new(0, 165, 0, 110)
-SubmitBtn.Size = UDim2.new(0, 135, 0, 35)
-SubmitBtn.Font = Enum.Font.GothamBold
-SubmitBtn.Text = "Verificar Key"
+SubmitBtn.Position = UDim2.new(0, 190, 0, 130)
+SubmitBtn.Size = UDim2.new(0, 145, 0, 42)
+SubmitBtn.Font = Enum.Font.GothamBlack
+SubmitBtn.Text = "VERIFICAR"
 SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 SubmitBtn.TextSize = 13
 SubmitBtn.AutoButtonColor = false 
-Instance.new("UICorner", SubmitBtn).CornerRadius = UDim.new(0, 5)
+Instance.new("UICorner", SubmitBtn).CornerRadius = UDim.new(0, 8)
+
+local SubmitStroke = Instance.new("UIStroke")
+SubmitStroke.Parent = SubmitBtn
+SubmitStroke.Color = Color3.fromRGB(255, 60, 60)
+SubmitStroke.Thickness = 1
+SubmitStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
 GetKeyBtn.MouseEnter:Connect(function()
-    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 40), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+    TweenService:Create(GetKeyStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(150, 150, 160)}):Play()
 end)
 GetKeyBtn.MouseLeave:Connect(function()
-    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25), TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
+    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 20, 22), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+    TweenService:Create(GetKeyStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(70, 70, 80)}):Play()
 end)
 
 SubmitBtn.MouseEnter:Connect(function()
@@ -186,11 +344,11 @@ GetKeyBtn.MouseButton1Click:Connect(function()
         pcall(function()
             setclipboard("https://discord.gg/VfbvCRJBNv")
         end)
-        GetKeyBtn.Text = "Copiado!"
-        TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 100, 40)}):Play()
+        GetKeyBtn.Text = "COPIADO!"
+        TweenService:Create(GetKeyStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(50, 200, 50)}):Play()
         task.wait(1.5)
-        GetKeyBtn.Text = "Get Key"
-        TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play()
+        GetKeyBtn.Text = "GET KEY"
+        TweenService:Create(GetKeyStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(70, 70, 80)}):Play()
     else
         sendErrorNotification("Seu executor não suporta cópia de links.")
     end
@@ -204,9 +362,9 @@ SubmitBtn.MouseButton1Click:Connect(function()
         return
     end
 
-    SubmitBtn.Text = "Verificando..."
+    SubmitBtn.Text = "AGUARDE..."
     
-    local url = "(loadstring ou load)(game:HttpGet("https://www.keyforge.win/v1/load/cmqygdgws000204jyvwpi6a42?e=1&script=cmqygl8wo000204l5c7vdhojf&key=" .. game:GetService("HttpService"):UrlEncode(key) .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647)),true))()"
+    local url = "https://www.keyforge.win/v1/load/cmqygdgws000204jyvwpi6a42?e=1&script=cmqygl8wo000204l5c7vdhojf&key=" .. HttpService:UrlEncode(key) .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647))
 
     local success, response = pcall(function()
         return game:HttpGet(url, true)
@@ -214,51 +372,54 @@ SubmitBtn.MouseButton1Click:Connect(function()
 
     if not success or not response then
         sendErrorNotification("Erro de conexão com o servidor do KeyForge, Tente novamente.")
-        SubmitBtn.Text = "Verificar Key"
+        SubmitBtn.Text = "VERIFICAR"
         return
     end
-
     
-    local lowerResponse = string.lower(response)
-    
-    
-    if string.find(lowerResponse, "invalid") or string.find(lowerResponse, "incorrect") or string.find(lowerResponse, "not found") then
-        sendErrorNotification("Key Inválida! Verifique se digitou corretamente.")
-        SubmitBtn.Text = "Verificar Key"
-        return
+    if #response < 300 then
+        local lowerResponse = string.lower(response)
         
-    elseif string.find(lowerResponse, "expire") then
-        sendErrorNotification("Key Expirada! Você precisa pegar uma nova Key.")
-        SubmitBtn.Text = "Verificar Key"
-        return
-        
-    elseif string.find(lowerResponse, "hwid") then
-        sendErrorNotification("HWID Incorreto! Esta Key foi gerada para outro aparelho.")
-        SubmitBtn.Text = "Verificar Key"
-        return
-        
-    elseif string.find(lowerResponse, "blacklist") or string.find(lowerResponse, "banned") then
-        sendErrorNotification("Key Banida! Esta chave está na lista negra.")
-        SubmitBtn.Text = "Verificar Key"
-        return
-        
-    elseif string.find(lowerResponse, "rate limit") or string.find(lowerResponse, "too many") then
-        sendErrorNotification("Muitas tentativas! Aguarde um pouco e tente de novo.")
-        SubmitBtn.Text = "Verificar Key"
-        return
-        
-    elseif #response < 10 then
-        sendErrorNotification("Erro desconhecido. O servidor retornou algo inválido.")
-        SubmitBtn.Text = "Verificar Key"
-        return
+        if string.find(lowerResponse, "invalid") or string.find(lowerResponse, "incorrect") or string.find(lowerResponse, "not found") then
+            sendErrorNotification("Key Inválida! Verifique se digitou corretamente.")
+            SubmitBtn.Text = "VERIFICAR"
+            return
+            
+        elseif string.find(lowerResponse, "expire") then
+            sendErrorNotification("Key Expirada! Você precisa pegar uma nova Key.")
+            SubmitBtn.Text = "VERIFICAR"
+            return
+            
+        elseif string.find(lowerResponse, "hwid") then
+            sendErrorNotification("HWID Incorreto! Esta Key foi gerada para outro aparelho.")
+            SubmitBtn.Text = "VERIFICAR"
+            return
+            
+        elseif string.find(lowerResponse, "blacklist") or string.find(lowerResponse, "banned") then
+            sendErrorNotification("Key Banida! Esta chave está na lista negra.")
+            SubmitBtn.Text = "VERIFICAR"
+            return
+            
+        elseif string.find(lowerResponse, "rate limit") or string.find(lowerResponse, "too many") then
+            sendErrorNotification("Muitas tentativas! Aguarde um pouco e tente de novo.")
+            SubmitBtn.Text = "VERIFICAR"
+            return
+        end
     end
 
+    local compileFunction = loadstring or load
+    if type(compileFunction) ~= "function" then
+        sendErrorNotification("Seu executor não suporta execução de scripts (loadstring).")
+        SubmitBtn.Text = "VERIFICAR"
+        return
+    end
     
-    local compiledScript, compileError = loadstring(response)
+    local compiledScript, compileError = compileFunction(response)
     
     if compiledScript then
-        
         saveKey(key)
+        
+        TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+        task.wait(0.4)
         ScreenGui:Destroy() 
         
         task.spawn(showSuccessNotification)
@@ -268,11 +429,12 @@ SubmitBtn.MouseButton1Click:Connect(function()
         end)
         
         if not runSuccess then
-            warn("Erro ao rodar o Killer Hub: " .. tostring(runError))
+            warn("Erro interno ao rodar o Killer Hub: " .. tostring(runError))
+            sendErrorNotification("A Key validou, mas o KILLER HUB falhou ao iniciar.")
         end
     else
-        
-        sendErrorNotification("A Key inserida não retornou um script válido.")
-        SubmitBtn.Text = "Verificar Key"
+        sendErrorNotification("A Key validou, mas o código retornado não pôde ser lido.")
+        warn("Erro de Compilação: " .. tostring(compileError))
+        SubmitBtn.Text = "VERIFICAR"
     end
 end)
