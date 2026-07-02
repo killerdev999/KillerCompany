@@ -206,7 +206,7 @@ SubmitBtn.MouseButton1Click:Connect(function()
 
     SubmitBtn.Text = "Verificando..."
     
-    local url = "https://www.keyforge.win/v1/load/cmqygdgws000204jyvwpi6a42?e=1&script=cmqygl8wo000204l5c7vdhojf&key=" .. game:GetService("HttpService"):UrlEncode(key) .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647))
+    local url = "(loadstring ou load)(game:HttpGet("https://www.keyforge.win/v1/load/cmqygdgws000204jyvwpi6a42?e=1&script=cmqygl8wo000204l5c7vdhojf&key=" .. game:GetService("HttpService"):UrlEncode(key) .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647)),true))()"
 
     local success, response = pcall(function()
         return game:HttpGet(url, true)
