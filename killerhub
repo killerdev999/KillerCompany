@@ -144,7 +144,7 @@ local function showSuccessNotification()
     SubTitle.Position = UDim2.new(0, 75, 0.5, 6)
     SubTitle.Size = UDim2.new(1, -90, 0, 15)
     SubTitle.Font = Enum.Font.GothamSemibold
-    SubTitle.Text = "Carregando Killer Hub..."
+    SubTitle.Text = "Carregando KILLER HUB..."
     SubTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
     SubTitle.TextSize = 12
     SubTitle.TextXAlignment = Enum.TextXAlignment.Left
